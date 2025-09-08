@@ -1,0 +1,101 @@
+:root {
+  --white-key-color: #f8f8f8;
+  --black-key-color: #333;
+  --highlight-color: #f8e9a1;
+  --text-dark: #333;
+  --text-light: #fff;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--text-dark);
+  background-color: #f5f5f5;
+}
+
+a {
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* 미디어 쿼리는 각 모듈 CSS 파일에 추가해야 합니다 */
+/* 예: Header.module.css에 추가할 미디어 쿼리 */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .navigation ul {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0.5rem 0;
+  }
+}
+
+/* 예: PianoKeyboard.module.css에 추가할 미디어 쿼리 */
+@media (max-width: 768px) {
+  .pianoKeyboard {
+    height: 60px;
+    overflow-x: auto;
+  }
+}
+
+/* 예: HomePage.module.css에 추가할 미디어 쿼리 */
+@media (max-width: 768px) {
+  .heroContent h1 {
+    font-size: 1.8rem;
+  }
+  
+  .heroContent p {
+    font-size: 1rem;
+  }
+}
+
+/* 예: Footer.module.css에 추가할 미디어 쿼리 */
+@media (max-width: 768px) {
+  .footer {
+    grid-template-columns: 1fr;
+  }
+  
+  .footerBottom {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
