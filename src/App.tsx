@@ -1,15 +1,26 @@
-import './App.css'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+// src/App.tsx
+import React from 'react';
+import { Provider } from 'react-redux';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { store } from './store/store';
+import LoginPage from './components/LoginPage';
+import './styles/LoginPage.css';
+import './styles/global.css';
 
 
-function App() {
-
+const App: React.FC = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-      </Routes>
-    </BrowserRouter>
-  )
-}
+    <Provider store={store}>
+      <Router>
+        <div className="app">
+          <Routes>
+            <Route path="/" element={<LoginPage />} />
+            {/* 추후 다른 라우트들 추가 */}
+          </Routes>
+        </div>
+      </Router>
+    </Provider>
+  );
+};
 
-export default App
+export default App;

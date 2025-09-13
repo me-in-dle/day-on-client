@@ -1,0 +1,164 @@
+/* src/styles/globals.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* 뉴모피즘 컬러 팔레트 */
+  --bg-primary: #e0e5ec;
+  --bg-secondary: #f5f7fa;
+  --text-primary: #2c3e50;
+  --text-secondary: #7f8c8d;
+  --shadow-light: #ffffff;
+  --shadow-dark: #a3b1c6;
+  --accent-blue: #3498db;
+  --accent-green: #2ecc71;
+  --accent-orange: #f39c12;
+  
+  /* 그라데이션 */
+  --gradient-neumorphic: linear-gradient(145deg, #f0f5fa, #d1d9e0);
+  --gradient-pressed: linear-gradient(145deg, #d1d9e0, #f0f5fa);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* 뉴모피즘 기본 박스 */
+.neuro-box {
+  background: var(--bg-primary);
+  border-radius: 20px;
+  box-shadow: 
+    9px 9px 16px var(--shadow-dark),
+    -9px -9px 16px var(--shadow-light);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* 눌린 상태 */
+.neuro-box.pressed {
+  box-shadow: 
+    inset 6px 6px 10px var(--shadow-dark),
+    inset -6px -6px 10px var(--shadow-light);
+}
+
+/* 호버 효과 */
+.neuro-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    12px 12px 20px var(--shadow-dark),
+    -12px -12px 20px var(--shadow-light);
+}
+
+/* 뉴모피즘 버튼 */
+.neuro-btn {
+  padding: 16px 32px;
+  border: none;
+  border-radius: 16px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 
+    6px 6px 12px var(--shadow-dark),
+    -6px -6px 12px var(--shadow-light);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 56px;
+}
+
+.neuro-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 
+    8px 8px 16px var(--shadow-dark),
+    -8px -8px 16px var(--shadow-light);
+}
+
+.neuro-btn:active {
+  transform: translateY(0);
+  box-shadow: 
+    inset 4px 4px 8px var(--shadow-dark),
+    inset -4px -4px 8px var(--shadow-light);
+}
+
+.neuro-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 
+    3px 3px 6px var(--shadow-dark),
+    -3px -3px 6px var(--shadow-light);
+}
+
+/* 구글 버튼 */
+.neuro-btn.google {
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  color: #333;
+}
+
+/* 카카오 버튼 */
+.neuro-btn.kakao {
+  background: linear-gradient(145deg, #fee500, #ffd700);
+  color: #3c1e1e;
+}
+
+/* 뉴모피즘 카드 */
+.neuro-card {
+  padding: 32px;
+  background: var(--bg-primary);
+  border-radius: 24px;
+  box-shadow: 
+    12px 12px 24px var(--shadow-dark),
+    -12px -12px 24px var(--shadow-light);
+}
+
+/* 로딩 스피너 */
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--shadow-dark);
+  border-top: 3px solid var(--accent-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 에러 메시지 */
+.error-message {
+  background: linear-gradient(145deg, #fee, #fdd);
+  color: #c0392b;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  text-align: center;
+  margin: 16px 0;
+  box-shadow: 
+    4px 4px 8px rgba(192, 57, 43, 0.1),
+    -4px -4px 8px rgba(255, 255, 255, 0.8);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .neuro-card {
+    padding: 24px;
+    border-radius: 20px;
+  }
+  
+  .neuro-btn {
+    padding: 14px 24px;
+    font-size: 15px;
+  }
+}
