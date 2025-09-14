@@ -3,9 +3,10 @@ import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { store } from './store/store';
 import LoginPage from './components/LoginPage';
-import './styles/LoginPage.css';
 import './styles/global.css';
 import { HomePage } from './components/HomePage';
+import { AuthCallback } from './components/AuthCallBack';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const App: React.FC = () => {
   return (
@@ -15,17 +16,24 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/login" element={<LoginPage />} />
 
+            <Route path="/auth/callback" element={<AuthCallback />} />
+
             <Route
               path="/dashboard"
               element={
-                <HomePage />
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
               }
             />
+
 
             <Route
               path="/"
               element={
-                <HomePage />
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
               }
             />
 

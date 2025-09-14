@@ -1,88 +1,33 @@
 // src/components/LoginPage.tsx
 import React, { useState, useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { googleLogin, kakaoLogin, clearError } from '../store/slices/authSlice';
+import { GoogleIcon } from './icon/GoogleIcon';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { authAPI } from '@/api/client';
+import { KakaoIcon } from './icon/KaKaoIcon';
 
 const LoginPage: React.FC = () => {
-    const dispatch = useAppDispatch();
-    const { isLoading, error } = useAppSelector((state) => state.auth);
-    const [loadingType, setLoadingType] = useState<'google' | 'kakao' | null>(null);
+    const navigate = useNavigate();
+    const { isAuthenticated, isLoading } = useSelector((state: RootState) => state.auth);
 
-    // URL에서 인증 코드를 확인하여 로그인 처리
+    // 이미 로그인된 경우 대시보드로 리디렉션
     useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        const state = urlParams.get('state');
-
-        if (code) {
-            if (state === 'google') {
-                setLoadingType('google');
-                dispatch(googleLogin(code))
-                    .unwrap()
-                    .then(() => {
-                        // 성공 시 URL 파라미터 제거
-                        window.history.replaceState({}, document.title, window.location.pathname);
-                    })
-                    .catch((error) => {
-                        console.error('Google login failed:', error);
-                    })
-                    .finally(() => {
-                        setLoadingType(null);
-                    });
-            } else if (state === 'kakao') {
-                setLoadingType('kakao');
-                dispatch(kakaoLogin(code))
-                    .unwrap()
-                    .then(() => {
-                        window.history.replaceState({}, document.title, window.location.pathname);
-                    })
-                    .catch((error) => {
-                        console.error('Kakao login failed:', error);
-                    })
-                    .finally(() => {
-                        setLoadingType(null);
-                    });
-            }
+        if (isAuthenticated) {
+            navigate('/dashboard', { replace: true });
         }
-    }, [dispatch]);
+    }, [isAuthenticated, navigate]);
 
     const handleGoogleLogin = () => {
-        const GOOGLE_CLIENT_ID = import.meta.env.VITE_APP_GOOGLE_CLIENT_ID || 'your-google-client-id.apps.googleusercontent.com';
-        const REDIRECT_URI = import.meta.env.VITE_APP_GOOGLE_REDIRECT_URL || window.location.origin;
-        const SCOPE = 'openid email profile';
-
-        const googleOAuthURL = `https://accounts.google.com/o/oauth2/v2/auth?` +
-            `client_id=${GOOGLE_CLIENT_ID}&` +
-            `redirect_uri=${REDIRECT_URI}&` +
-            `response_type=code&` +
-            `scope=${SCOPE}&` +
-            `state=google&` +
-            `access_type=offline&` +
-            `prompt=consent`;
-
-        window.location.href = googleOAuthURL;
+        authAPI.redirectToGoogleLogin();
     };
 
     const handleKakaoLogin = () => {
-        // Kakao OAuth 페이지로 리다이렉트
-        const KAKAO_CLIENT_ID = 'your-kakao-client-id';
-        const REDIRECT_URI = encodeURIComponent(window.location.origin);
-
-        const kakaoOAuthURL = `https://kauth.kakao.com/oauth/authorize?` +
-            `client_id=${KAKAO_CLIENT_ID}&` +
-            `redirect_uri=${REDIRECT_URI}&` +
-            `response_type=code&` +
-            `state=kakao`;
-
-        window.location.href = kakaoOAuthURL;
-    };
-
-    const handleClearError = () => {
-        dispatch(clearError());
+        authAPI.redirectToKakaoLogin();
     };
 
     return (
-        <div className="login-container">
+        <div className="main-container">
             <div className="login-content">
                 {/* 브랜드 섹션 */}
                 <div className="brand-section">
@@ -99,14 +44,6 @@ const LoginPage: React.FC = () => {
                     <h2 className="login-title">시작하기</h2>
                     <p className="login-subtitle">소셜 계정으로 간편하게 로그인하세요</p>
 
-                    {/* 에러 메시지 */}
-                    {error && (
-                        <div className="error-message" onClick={handleClearError}>
-                            {error}
-                            <span className="error-close">✕</span>
-                        </div>
-                    )}
-
                     {/* 로그인 버튼들 */}
                     <div className="login-buttons">
                         <button
@@ -114,11 +51,7 @@ const LoginPage: React.FC = () => {
                             onClick={handleGoogleLogin}
                             disabled={isLoading}
                         >
-                            {loadingType === 'google' ? (
-                                <div className="loading-spinner" />
-                            ) : (
-                                <GoogleIcon />
-                            )}
+                            <GoogleIcon />
                             Google로 계속하기
                         </button>
 
@@ -127,11 +60,7 @@ const LoginPage: React.FC = () => {
                             onClick={handleKakaoLogin}
                             disabled={isLoading}
                         >
-                            {loadingType === 'kakao' ? (
-                                <div className="loading-spinner" />
-                            ) : (
-                                <KakaoIcon />
-                            )}
+                            <KakaoIcon />
                             카카오로 계속하기
                         </button>
                     </div>
@@ -144,34 +73,5 @@ const LoginPage: React.FC = () => {
         </div>
     );
 };
-
-// 구글 아이콘 컴포넌트
-const GoogleIcon: React.FC = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24">
-        <path
-            fill="#4285F4"
-            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-        />
-        <path
-            fill="#34A853"
-            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-        />
-        <path
-            fill="#FBBC05"
-            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-        />
-        <path
-            fill="#EA4335"
-            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-        />
-    </svg>
-);
-
-// 카카오 아이콘 컴포넌트
-const KakaoIcon: React.FC = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="#3c1e1e">
-        <path d="M12 3C7.03 3 3 6.44 3 10.61c0 2.67 1.73 5.02 4.38 6.39-.18-.64-.33-1.64-.09-2.36l1.78-7.53s-.46-.92-.46-2.28c0-2.14 1.24-3.74 2.78-3.74 1.31 0 1.95.99 1.95 2.17 0 1.32-.84 3.3-1.27 5.12-.36 1.53.77 2.77 2.28 2.77 2.74 0 4.84-2.88 4.84-7.04 0-3.68-2.65-6.26-6.43-6.26-4.38 0-6.95 3.28-6.95 6.67 0 1.32.51 2.73 1.14 3.5.13.15.14.29.11.44-.12.5-.38 1.54-.44 1.75-.07.28-.23.34-.53.21C4.88 15.2 3.84 13.04 3.84 10.61 3.84 6.44 7.03 3 12 3z" />
-    </svg>
-);
 
 export default LoginPage;
