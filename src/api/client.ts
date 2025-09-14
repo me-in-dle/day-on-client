@@ -49,6 +49,10 @@ export const authAPI = {
         return response;
     },
 
+    googleCallback: (code: string) => {
+        return axios.post('/api/auth/google/callback', { code });
+    },
+
     // 카카오 로그인
     kakaoLogin: async (code: string) => {
         const response = await apiClient.post<LoginResponse>('/auth/kakao', { code });

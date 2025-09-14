@@ -6,20 +6,19 @@
 }
 
 :root {
-  /* 뉴모피즘 컬러 팔레트 */
-  --bg-primary: #e0e5ec;
-  --bg-secondary: #f5f7fa;
-  --text-primary: #2c3e50;
-  --text-secondary: #7f8c8d;
-  --shadow-light: #ffffff;
-  --shadow-dark: #a3b1c6;
-  --accent-blue: #3498db;
-  --accent-green: #2ecc71;
-  --accent-orange: #f39c12;
-  
-  /* 그라데이션 */
-  --gradient-neumorphic: linear-gradient(145deg, #f0f5fa, #d1d9e0);
-  --gradient-pressed: linear-gradient(145deg, #d1d9e0, #f0f5fa);
+  /* 심플 컬러 팔레트 */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --text-primary: #1a1a1a;
+  --text-secondary: #6b7280;
+  --border-light: #e5e7eb;
+  --border-medium: #d1d5db;
+  --accent-blue: #3b82f6;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 body {
@@ -28,105 +27,86 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* 뉴모피즘 기본 박스 */
-.neuro-box {
+/* 기본 카드 */
+.card {
   background: var(--bg-primary);
-  border-radius: 20px;
-  box-shadow: 
-    9px 9px 16px var(--shadow-dark),
-    -9px -9px 16px var(--shadow-light);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  transition: all 0.2s ease;
 }
 
-/* 눌린 상태 */
-.neuro-box.pressed {
-  box-shadow: 
-    inset 6px 6px 10px var(--shadow-dark),
-    inset -6px -6px 10px var(--shadow-light);
+.card:hover {
+  box-shadow: var(--shadow-md);
 }
 
-/* 호버 효과 */
-.neuro-box:hover {
-  transform: translateY(-2px);
-  box-shadow: 
-    12px 12px 20px var(--shadow-dark),
-    -12px -12px 20px var(--shadow-light);
-}
-
-/* 뉴모피즘 버튼 */
-.neuro-btn {
-  padding: 16px 32px;
+/* 기본 버튼 */
+.btn {
+  padding: 12px 24px;
   border: none;
-  border-radius: 16px;
-  background: var(--bg-primary);
-  color: var(--text-primary);
+  border-radius: 8px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  box-shadow: 
-    6px 6px 12px var(--shadow-dark),
-    -6px -6px 12px var(--shadow-light);
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  min-height: 56px;
+  gap: 8px;
+  min-height: 48px;
 }
 
-.neuro-btn:hover {
+.btn:hover {
   transform: translateY(-1px);
-  box-shadow: 
-    8px 8px 16px var(--shadow-dark),
-    -8px -8px 16px var(--shadow-light);
+  box-shadow: var(--shadow-md);
 }
 
-.neuro-btn:active {
+.btn:active {
   transform: translateY(0);
-  box-shadow: 
-    inset 4px 4px 8px var(--shadow-dark),
-    inset -4px -4px 8px var(--shadow-light);
 }
 
-.neuro-btn:disabled {
+.btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
-  box-shadow: 
-    3px 3px 6px var(--shadow-dark),
-    -3px -3px 6px var(--shadow-light);
+  box-shadow: var(--shadow);
 }
 
 /* 구글 버튼 */
-.neuro-btn.google {
-  background: linear-gradient(145deg, #ffffff, #f8f9fa);
-  color: #333;
+.btn.google {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
+}
+
+.btn.google:hover {
+  background: var(--bg-secondary);
 }
 
 /* 카카오 버튼 */
-.neuro-btn.kakao {
-  background: linear-gradient(145deg, #fee500, #ffd700);
+.btn.kakao {
+  background: #fee500;
   color: #3c1e1e;
+  border: 1px solid #fdd835;
 }
 
-/* 뉴모피즘 카드 */
-.neuro-card {
-  padding: 32px;
-  background: var(--bg-primary);
-  border-radius: 24px;
-  box-shadow: 
-    12px 12px 24px var(--shadow-dark),
-    -12px -12px 24px var(--shadow-light);
+.btn.kakao:hover {
+  background: #fdd835;
 }
 
 /* 로딩 스피너 */
 .loading-spinner {
-  width: 24px;
-  height: 24px;
-  border: 3px solid var(--shadow-dark);
-  border-top: 3px solid var(--accent-blue);
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-light);
+  border-top: 2px solid var(--accent-blue);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -138,27 +118,216 @@ body {
 
 /* 에러 메시지 */
 .error-message {
-  background: linear-gradient(145deg, #fee, #fdd);
-  color: #c0392b;
-  padding: 12px 20px;
-  border-radius: 12px;
+  background: #fef2f2;
+  color: var(--accent-red);
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
   font-size: 14px;
   text-align: center;
   margin: 16px 0;
-  box-shadow: 
-    4px 4px 8px rgba(192, 57, 43, 0.1),
-    -4px -4px 8px rgba(255, 255, 255, 0.8);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.error-message:hover {
+  background: #fee2e2;
+}
+
+.error-close {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+.error-message:hover .error-close {
+  opacity: 1;
 }
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
-  .neuro-card {
-    padding: 24px;
-    border-radius: 20px;
+  .btn {
+    padding: 14px 20px;
+    font-size: 15px;
+    min-height: 44px;
+  }
+}
+
+/* src/styles/LoginPage.css */
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+  padding: 20px;
+}
+
+.login-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* 브랜드 섹션 */
+.brand-section {
+  text-align: center;
+  padding: 40px 32px;
+  border-radius: 16px;
+}
+
+.brand-title {
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.brand-subtitle {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
+}
+
+.brand-description {
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.brand-description p {
+  margin: 2px 0;
+}
+
+/* 로그인 섹션 */
+.login-section {
+  padding: 32px;  border-radius: 16px;
+}
+
+.login-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.login-subtitle {
+  font-size: 15px;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+/* 로그인 버튼들 */
+.login-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.login-buttons .btn {
+  width: 100%;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 16px 20px;
+  min-height: 52px;
+}
+
+/* 로그인 푸터 */
+.login-footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.login-footer p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  padding: 0 12px;
+}
+
+/* 애니메이션 */
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-message {
+  animation: slideInDown 0.3s ease-out;
+}
+
+/* 반응형 디자인 - 모바일 우선 */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 16px;
   }
   
-  .neuro-btn {
-    padding: 14px 24px;
+  .login-content {
+    min-width: 280px;
+    padding: 32px 16px;
+  }
+  
+  .brand-section {
+    margin-bottom: 40px;
+  }
+  
+  .brand-title {
+    font-size: 32px;
+  }
+  
+  .brand-subtitle {
     font-size: 15px;
+  }
+  
+  .login-title {
+    font-size: 20px;
+  }
+  
+  .login-subtitle {
+    font-size: 13px;
+  }
+  
+  .login-buttons .btn {
+    font-size: 14px;
+    padding: 14px 16px;
+    min-height: 48px;
+  }
+}
+
+/* 작은 모바일 화면 */
+@media (max-width: 360px) {
+  .login-container {
+    padding: 12px;
+  }
+  
+  .login-content {
+    min-width: 260px;
+    padding: 24px 12px;
+  }
+  
+  .brand-title {
+    font-size: 28px;
   }
 }

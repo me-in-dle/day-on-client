@@ -1,45 +1,80 @@
 // src/components/LoginPage.tsx
-import React, { useState } from 'react';
-// 상대 경로로 명확하게 지정
+import React, { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { googleLogin, kakaoLogin, clearError } from '../store/slices/authSlice';
-
-// 디버깅을 위한 로그
-console.log('LoginPage.tsx loaded');
-console.log('useAppDispatch:', useAppDispatch);
-console.log('useAppSelector:', useAppSelector);
 
 const LoginPage: React.FC = () => {
     const dispatch = useAppDispatch();
     const { isLoading, error } = useAppSelector((state) => state.auth);
     const [loadingType, setLoadingType] = useState<'google' | 'kakao' | null>(null);
 
-    const handleGoogleLogin = async () => {
-        try {
-            setLoadingType('google');
-            // 실제 구현에서는 Google OAuth 플로우를 통해 인증 코드를 받아야 합니다
-            // 여기서는 데모용으로 임시 코드를 사용
-            const authCode = 'demo-google-auth-code';
-            await dispatch(googleLogin(authCode)).unwrap();
-        } catch (error) {
-            console.error('Google login failed:', error);
-        } finally {
-            setLoadingType(null);
+    // URL에서 인증 코드를 확인하여 로그인 처리
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const state = urlParams.get('state');
+
+        if (code) {
+            if (state === 'google') {
+                setLoadingType('google');
+                dispatch(googleLogin(code))
+                    .unwrap()
+                    .then(() => {
+                        // 성공 시 URL 파라미터 제거
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    })
+                    .catch((error) => {
+                        console.error('Google login failed:', error);
+                    })
+                    .finally(() => {
+                        setLoadingType(null);
+                    });
+            } else if (state === 'kakao') {
+                setLoadingType('kakao');
+                dispatch(kakaoLogin(code))
+                    .unwrap()
+                    .then(() => {
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    })
+                    .catch((error) => {
+                        console.error('Kakao login failed:', error);
+                    })
+                    .finally(() => {
+                        setLoadingType(null);
+                    });
+            }
         }
+    }, [dispatch]);
+
+    const handleGoogleLogin = () => {
+        const GOOGLE_CLIENT_ID = import.meta.env.VITE_APP_GOOGLE_CLIENT_ID || 'your-google-client-id.apps.googleusercontent.com';
+        const REDIRECT_URI = import.meta.env.VITE_APP_GOOGLE_REDIRECT_URL || window.location.origin;
+        const SCOPE = 'openid email profile';
+
+        const googleOAuthURL = `https://accounts.google.com/o/oauth2/v2/auth?` +
+            `client_id=${GOOGLE_CLIENT_ID}&` +
+            `redirect_uri=${REDIRECT_URI}&` +
+            `response_type=code&` +
+            `scope=${SCOPE}&` +
+            `state=google&` +
+            `access_type=offline&` +
+            `prompt=consent`;
+
+        window.location.href = googleOAuthURL;
     };
 
-    const handleKakaoLogin = async () => {
-        try {
-            setLoadingType('kakao');
-            // 실제 구현에서는 Kakao OAuth 플로우를 통해 인증 코드를 받아야 합니다
-            // 여기서는 데모용으로 임시 코드를 사용
-            const authCode = 'demo-kakao-auth-code';
-            await dispatch(kakaoLogin(authCode)).unwrap();
-        } catch (error) {
-            console.error('Kakao login failed:', error);
-        } finally {
-            setLoadingType(null);
-        }
+    const handleKakaoLogin = () => {
+        // Kakao OAuth 페이지로 리다이렉트
+        const KAKAO_CLIENT_ID = 'your-kakao-client-id';
+        const REDIRECT_URI = encodeURIComponent(window.location.origin);
+
+        const kakaoOAuthURL = `https://kauth.kakao.com/oauth/authorize?` +
+            `client_id=${KAKAO_CLIENT_ID}&` +
+            `redirect_uri=${REDIRECT_URI}&` +
+            `response_type=code&` +
+            `state=kakao`;
+
+        window.location.href = kakaoOAuthURL;
     };
 
     const handleClearError = () => {
@@ -49,8 +84,8 @@ const LoginPage: React.FC = () => {
     return (
         <div className="login-container">
             <div className="login-content">
-                {/* 메인 타이틀 */}
-                <div className="brand-section neuro-card">
+                {/* 브랜드 섹션 */}
+                <div className="brand-section">
                     <h1 className="brand-title">DayOn</h1>
                     <p className="brand-subtitle">오늘을 쓰다</p>
                     <div className="brand-description">
@@ -60,7 +95,7 @@ const LoginPage: React.FC = () => {
                 </div>
 
                 {/* 로그인 섹션 */}
-                <div className="login-section neuro-card">
+                <div className="login-section">
                     <h2 className="login-title">시작하기</h2>
                     <p className="login-subtitle">소셜 계정으로 간편하게 로그인하세요</p>
 
@@ -75,7 +110,7 @@ const LoginPage: React.FC = () => {
                     {/* 로그인 버튼들 */}
                     <div className="login-buttons">
                         <button
-                            className="neuro-btn google"
+                            className="btn google"
                             onClick={handleGoogleLogin}
                             disabled={isLoading}
                         >
@@ -88,7 +123,7 @@ const LoginPage: React.FC = () => {
                         </button>
 
                         <button
-                            className="neuro-btn kakao"
+                            className="btn kakao"
                             onClick={handleKakaoLogin}
                             disabled={isLoading}
                         >

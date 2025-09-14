@@ -61,7 +61,7 @@ const authSlice = createSlice({
 });
 
 export const googleLogin = createAsyncThunk(
-    'auth/googleLogin',
+    '/oauth2/authorization/google',
     async (code: string) => {
         const response = await authAPI.googleLogin(code);
         return response.data;
