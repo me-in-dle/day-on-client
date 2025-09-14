@@ -1,4 +1,3 @@
-// src/App.tsx
 import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -6,7 +5,7 @@ import { store } from './store/store';
 import LoginPage from './components/LoginPage';
 import './styles/LoginPage.css';
 import './styles/global.css';
-
+import { HomePage } from './components/HomePage';
 
 const App: React.FC = () => {
   return (
@@ -14,8 +13,22 @@ const App: React.FC = () => {
       <Router>
         <div className="app">
           <Routes>
-            <Route path="/" element={<LoginPage />} />
-            {/* 추후 다른 라우트들 추가 */}
+            <Route path="/login" element={<LoginPage />} />
+
+            <Route
+              path="/dashboard"
+              element={
+                <HomePage />
+              }
+            />
+
+            <Route
+              path="/"
+              element={
+                <HomePage />
+              }
+            />
+
           </Routes>
         </div>
       </Router>
