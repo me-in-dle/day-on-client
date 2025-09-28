@@ -1,19 +1,19 @@
 export interface Schedule {
-  id: string;
+  id: number;
   title: string;
-  contents: string | null;
-  useYn: string;
-  status: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
-  // tagIds: string | null; 
-  startTime: string;
-  endTime: string;
-  relationTypes: string | null; 
-  location: string | null; 
+  contents?: string;
+  use_yn: string;  // snake_case
+  tag_ids?: string;  // snake_case
+  status: string;
+  start_time: string;  // snake_case
+  end_time: string;    // snake_case
+  relation_types?: string;  // snake_case
+  location?: string;
 }
 
 export interface CalendarResponse {
-  is_connected: boolean;     
-  connect_type: string | null; // google | kakao | null
+  connect_type: string;    // snake_case
+  is_connected: boolean;   // snake_case
   schedules: Schedule[];
 }
 
