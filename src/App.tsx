@@ -3,10 +3,10 @@ import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { store } from './store/store';
 import LoginPage from './components/LoginPage';
-import './styles/global.css';
 import { HomePage } from './components/HomePage';
 import { AuthCallback } from './components/AuthCallBack';
 import ProtectedRoute from './components/ProtectedRoute';
+import './styles/global.css';
 
 const App: React.FC = () => {
   return (
