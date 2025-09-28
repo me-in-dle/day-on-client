@@ -86,17 +86,26 @@ const Calendar: React.FC = () => {
     fetchSchedules(dateStr);
   }, [selectedDate]);
 
-  // 7~24시 타임라인 생성
+  // 0~23시 전체 타임라인과 일정 매핑
   const timeline = useMemo(() => {
     const timeSlots: { time: string; events: Schedule[] }[] = [];
     
-    for (let hour = 7; hour <= 24; hour++) {
+    for (let hour = 0; hour <= 23; hour++) {
       const timeStr = `${hour.toString().padStart(2, "0")}:00`;
       
-      // 해당 시간에 시작하는 이벤트들 찾기
+      // 해당 시간에 진행 중인 이벤트들 찾기
       const eventsAtTime = schedules.filter(schedule => {
-        const eventStartHour = parseInt(schedule.start_time.substring(0, 2));
-        return eventStartHour === hour;
+        const startHour = parseInt(schedule.start_time.substring(0, 2));
+        const startMinute = parseInt(schedule.start_time.substring(3, 5));
+        const endHour = parseInt(schedule.end_time.substring(0, 2));
+        const endMinute = parseInt(schedule.end_time.substring(3, 5));
+        
+        const eventStart = startHour * 60 + startMinute;
+        const eventEnd = endHour * 60 + endMinute;
+        const currentTime = hour * 60;
+        
+        // 현재 시간이 이벤트 시간 범위 안에 있는지 확인
+        return currentTime >= eventStart && currentTime < eventEnd;
       });
 
       timeSlots.push({
@@ -259,72 +268,52 @@ const Calendar: React.FC = () => {
             </div>
           ) : (
             timeline.map((slot, index) => (
-              <div key={index} className="schedule-hour">
-                <div className="schedule-time">{slot.time}</div>
-                <div className="schedule-content">
-                  {slot.events.length > 0 ? (
-                    <div className="schedule-event-group">
-                      {slot.events.map((event) => (
-                        <div
-                          key={event.id}
-                          className="schedule-event"
-                        >
-                          <div className="event-header">
-                            <div className="event-title-section">
-                              <strong className="event-title">{event.title}</strong>
-                              <div className="event-badges">
-                                {/* 연결 타입 배지 */}
-                                {event.relation_types && (
-                                  <span 
-                                    className="event-badge connection-badge-small"
-                                    style={{ 
-                                      backgroundColor: getConnectionBadgeColor(event.relation_types),
-                                      color: event.relation_types.toLowerCase() === 'kakao' ? '#3c1e1e' : 'white'
-                                    }}
-                                  >
-                                    {event.relation_types.toUpperCase()}
-                                  </span>
-                                )}
-                                
-                                {/* 태그 배지들 */}
-                                {event.tag_ids && event.tag_ids.split(',').map((tagId, i) => (
-                                  <span 
-                                    key={i}
-                                    className="event-badge tag-badge"
-                                    style={{ backgroundColor: getTagColor(tagId.trim()) }}
-                                  >
-                                    태그: {tagId.trim()}
-                                  </span>
-                                ))}
-                                
-                                {/* 상태 배지 */}
-                                <span className={`event-badge status-badge status-${event.status.toLowerCase()}`}>
-                                  {event.status}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="event-time-range">
-                              {formatTimeRange(event.start_time, event.end_time)}
-                            </div>
-                          </div>
-                          
-                          {/* 이벤트 내용 */}
-                          <div className="event-content">
-                            {event.contents && (
-                              <p className="event-description">{event.contents}</p>
-                            )}
-                            {event.location && (
-                              <div className="event-location">
-                                📍 {event.location}
-                              </div>
-                            )}
-                          </div>
+              <div key={index} className="schedule-hour-compact">
+                <div className="schedule-time-compact">{slot.time}</div>
+                <div className="schedule-content-overlay">
+                  {slot.events.map((event) => (
+                    <div
+                      key={event.id}
+                      className="schedule-event-overlay"
+                    >
+                      <div className="event-overlay-header">
+                        <strong className="event-title-compact">{event.title}</strong>
+                        <div className="event-time-compact">
+                          {formatTimeRange(event.start_time, event.end_time)}
                         </div>
-                      ))}
+                      </div>
+                      
+                      <div className="event-badges-compact">
+                        {/* 연결 타입 배지 */}
+                        {event.relation_types && (
+                          <span 
+                            className="event-badge-mini"
+                            style={{ 
+                              backgroundColor: getConnectionBadgeColor(event.relation_types),
+                              color: event.relation_types.toLowerCase() === 'kakao' ? '#3c1e1e' : 'white'
+                            }}
+                          >
+                            {event.relation_types.toUpperCase()}
+                          </span>
+                        )}
+                        
+                        {/* 상태 배지 */}
+                        <span className={`event-badge-mini status-${event.status.toLowerCase()}`}>
+                          {event.status}
+                        </span>
+                      </div>
+                      
+                      {/* 이벤트 내용 (간략히) */}
+                      {event.contents && (
+                        <p className="event-description-compact">{event.contents}</p>
+                      )}
+                      {event.location && (
+                        <div className="event-location-compact">
+                          📍 {event.location}
+                        </div>
+                      )}
                     </div>
-                  ) : (
-                    <div className="schedule-empty">여유 시간</div>
-                  )}
+                  ))}
                 </div>
               </div>
             ))
