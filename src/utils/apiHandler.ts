@@ -1,6 +1,7 @@
 import { ApiResponse } from "../types/api";
 import { apiClient } from "../api/client";
 
+
 export function handleApiResponse<T>(response: ApiResponse<T>): T {
   if (!response.success) {
     console.error(`[API ERROR] ${response.errorCode}: ${response.message}`);
