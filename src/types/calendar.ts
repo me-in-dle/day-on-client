@@ -1,19 +1,20 @@
 export interface Schedule {
-  id: string;
+  id: number;
   title: string;
-  contents: string | null;
-  useYn: string;
-  status: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
-  // tagIds: string | null; 
-  startTime: string;
-  endTime: string;
-  relationTypes: string | null; 
-  location: string | null; 
+  contents?: string | null;  
+  use_yn: string;
+  tag_ids?: string | null; 
+  status: string;
+  start_time: string;
+  end_time: string;
+  relation_types?: string | null; 
+  location?: string | null;       
 }
 
+
 export interface CalendarResponse {
-  is_connected: boolean;     
-  connect_type: string | null; // google | kakao | null
+  connect_type: string;    
+  is_connected: boolean;   
   schedules: Schedule[];
 }
 

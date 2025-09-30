@@ -3,8 +3,13 @@ import { ApiResponse } from "@/types/api";
 import { CalendarResponse, OAuthUrlResponse } from "@/types/calendar";
 
 // 캘린더 연결 시작 → 구글 OAuth URL 받기
-export async function getOAuthUrl(): Promise<OAuthUrlResponse> {
-  const res = await apiClient.get<ApiResponse<string>>("/v1/calendar/oauth-url");
+
+export async function getOAuthUrl(provider: string): Promise<OAuthUrlResponse> {
+  console.log("getOAuthUrl 호출됨, provider:", provider);
+  const res = await apiClient.get<ApiResponse<string>>("/v1/calendar/oauth-url", {
+    params: { provider }
+  });
+
 
   if (!res.data || !res.data.data) {
     throw new Error("OAuth URL이 비어 있습니다");

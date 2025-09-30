@@ -1,106 +1,199 @@
-// src/components/Calendar.tsx
-import React, { useMemo, useRef, useState } from 'react';
-import { Calendar as CalendarIcon } from 'lucide-react';
-
-interface CalendarEvent {
-    id: string;
-    title: string;
-    time: string;
-    duration: number; // 시간 단위
-}
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Calendar as CalendarIcon, RefreshCw, Settings, MapPin, Tag } from "lucide-react";
+import { getCalendarByDate, getOAuthUrl } from "@/services/calendarService";
+import { CalendarResponse, Schedule } from "@/types/calendar";
+import styles from "../styles/Calendar.module.css";
 
 const Calendar: React.FC = () => {
-    const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [isConnected, setIsConnected] = useState(false);
+  const [connectType, setConnectType] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-    // 오늘/어제/내일 샘플은 유지하되, UI는 아이콘으로만 노출
-    const today = new Date();
+  const today = new Date();
+  const dateInputRef = useRef<HTMLInputElement>(null);
 
-    // 샘플 이벤트
-    const sampleEvents: CalendarEvent[] = [
-        { id: '1', title: '아침 운동', time: '07:00', duration: 1 },
-        { id: '2', title: '회의', time: '10:00', duration: 2 },
-        { id: '3', title: '점심식사', time: '12:00', duration: 1 },
-        { id: '4', title: '프로젝트 작업', time: '14:00', duration: 3 },
-        { id: '5', title: '저녁 약속', time: '18:00', duration: 2 },
-    ];
+  const formatDateForAPI = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
-    const formatDate = (date: Date) =>
-        date.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short' });
+  const formatDate = (date: Date) =>
+    date.toLocaleDateString("ko-KR", {
+      month: "long",
+      day: "numeric",
+      weekday: "short",
+    });
 
-    const isToday = (date: Date) => date.toDateString() === today.toDateString();
+  const isToday = (date: Date) => date.toDateString() === today.toDateString();
 
-    // 7~22시 타임라인
-    const schedule = useMemo(() => {
-        const list: { time: string; event: CalendarEvent | null }[] = [];
-        for (let hour = 7; hour <= 24; hour++) {
-            const t = `${hour.toString().padStart(2, '0')}:00`;
-            list.push({ time: t, event: sampleEvents.find(e => e.time === t) || null });
-        }
-        return list;
-    }, [sampleEvents]);
+  const fetchSchedules = async (date: string) => {
+    setLoading(true);
+    try {
+      const res: CalendarResponse = await getCalendarByDate(date);
+      setIsConnected(res.is_connected);
+      setConnectType(res.connect_type);
 
-    // 달력 아이콘이 클릭하면 input[type=date]를 클릭
-    const dateInputRef = useRef<HTMLInputElement>(null);
-    const openDatePicker = () => dateInputRef.current?.click();
+      // Y인 일정만
+      const validSchedules = res.schedules.filter((s) => s.use_yn === "Y");
+      setSchedules(validSchedules);
+    } catch (err) {
+      console.error("캘린더 조회 실패:", err);
+      setIsConnected(false);
+      setSchedules([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    // input[type=date] 값으로 Date 생성
-    const onDateChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-        const value = e.target.value; // 'YYYY-MM-DD'
-        if (!value) return;
-        const [y, m, d] = value.split('-').map(Number);
-        // 로컬 타임 존 기준으로 설정
-        const next = new Date(y, (m ?? 1) - 1, d ?? 1, selectedDate.getHours(), selectedDate.getMinutes());
-        setSelectedDate(next);
-    };
+  useEffect(() => {
+    const dateStr = formatDateForAPI(selectedDate);
+    fetchSchedules(dateStr);
+  }, [selectedDate]);
 
-    // input[type=date] 초기값을 selectedDate에 맞춰서
-    const dateValue = useMemo(() => {
-        const y = selectedDate.getFullYear();
-        const m = `${selectedDate.getMonth() + 1}`.padStart(2, '0');
-        const d = `${selectedDate.getDate()}`.padStart(2, '0');
-        return `${y}-${m}-${d}`;
-    }, [selectedDate]);
+  const hours = useMemo(() => {
+    return Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, "0")}:00`);
+  }, []);
 
-    return (
-        <div className="calendar-root">
-            {/* 스케줄 헤더 */}
-            <div className="schedule-container card">
-                <div className="schedule-header">
-                    <div className="schedule-date">
-                        {formatDate(selectedDate)} 일정 {isToday(selectedDate) && <span className="badge-today">오늘</span>}
-                    </div>
+  const openDatePicker = () => dateInputRef.current?.click();
 
-                    {/* 달력 아이콘 버튼 + 숨겨진 date input */}
-                    <button className="icon-button" aria-label="날짜 선택" onClick={openDatePicker}>
-                        <CalendarIcon size={20} />
-                    </button>
-                    <input
-                        ref={dateInputRef}
-                        type="date"
-                        value={dateValue}
-                        onChange={onDateChange}
-                        className="visually-hidden-date"
-                    />
-                </div>
+  const onDateChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (!e.target.value) return;
+    const [y, m, d] = e.target.value.split("-").map(Number);
+    setSelectedDate(new Date(y, (m ?? 1) - 1, d ?? 1));
+  };
 
-                {/* 타임라인 */}
-                <div className="schedule-timeline">
-                    {schedule.map((slot, i) => (
-                        <div key={i} className="schedule-hour">
-                            <div className="schedule-time">{slot.time}</div>
-                            <div className="schedule-content">
-                                {slot.event ? (
-                                    <div className="schedule-event">{slot.event.title}</div>
-                                ) : (
-                                    <div className="schedule-empty">여유 시간</div>
-                                )}
-                            </div>
-                        </div>
-                    ))}
-                </div>
+  const dateValue = useMemo(() => {
+    return formatDateForAPI(selectedDate);
+  }, [selectedDate]);
+
+  const handleConnect = async (provider: string) => {
+    if (!provider) return;
+    try {
+      const { url } = await getOAuthUrl(provider);
+      window.location.href = url;
+    } catch (err) {
+      console.error("OAuth URL 요청 실패:", err);
+    }
+  };
+
+  const handleRefresh = () => {
+    const dateStr = formatDateForAPI(selectedDate);
+    fetchSchedules(dateStr);
+  };
+
+  return (
+    <div className={styles.calendarRoot}>
+      <div className={`${styles.scheduleContainer} card`}>
+        {/* 헤더 */}
+        <div className={styles.scheduleHeader}>
+          <div className={styles.scheduleHeaderLeft}>
+            <div className={styles.scheduleDate}>
+              {formatDate(selectedDate)} 일정
+              {isToday(selectedDate) && <span className={styles.badgeToday}>오늘</span>}
             </div>
+            <div className={styles.scheduleSummary}>
+              총 {schedules.length}개 일정
+            </div>
+          </div>
+          <div className={styles.scheduleHeaderRight}>
+            {isConnected && connectType && (
+              <div className={styles.connectionBadge}>✓ {connectType.toUpperCase()} 연동됨</div>
+            )}
+            <button onClick={handleRefresh} disabled={loading} className={styles.iconButton}>
+              <RefreshCw size={18} />
+            </button>
+            <button onClick={openDatePicker} className={styles.iconButton}>
+              <CalendarIcon size={18} />
+            </button>
+            <button className={styles.iconButton}>
+              <Settings size={18} />
+            </button>
+          </div>
         </div>
-    );
+
+        {/* 연동 배너 */}
+        {!isConnected && (
+          <div className={styles.connectBanner}>
+            <p>외부 캘린더를 연동하면 더 많은 일정을 볼 수 있어요.</p>
+            <select onChange={(e) => handleConnect(e.target.value)} defaultValue="">
+              <option value="" disabled>연동할 계정 선택</option>
+              <option value="google">Google</option>
+              <option value="kakao">Kakao</option>
+            </select>
+          </div>
+        )}
+
+        {/* 타임라인 */}
+        <div className={styles.scheduleTimeline}>
+          {hours.map((hour, index) => {
+            const eventsAtHour = schedules.filter(
+              (s) => parseInt(s.start_time.substring(0, 2)) === index
+            );
+
+            return (
+              <div key={hour} className={styles.scheduleRow}>
+                <div className={styles.scheduleTime}>{hour}</div>
+                <div className={styles.scheduleContent}>
+                  {eventsAtHour.length === 0 ? (
+                    <div className={styles.freeTime}>여유 시간</div>
+                  ) : (
+                    eventsAtHour.map((event) => (
+                      <div key={event.id} className={styles.eventCard}>
+                        <div className={styles.eventTitle}>
+                          <strong>{event.title}</strong>
+                          {event.relation_types && (
+                            <span className={`${styles.badge} ${styles[event.relation_types.toLowerCase()]}`}>
+                              {event.relation_types}
+                            </span>
+                          )}
+                          <span className={`${styles.badge} ${styles[event.status.toLowerCase()]}`}>
+                            {event.status}
+                          </span>
+                        </div>
+                        {event.contents && (
+                          <div className={styles.eventDescription}>{event.contents}</div>
+                        )}
+                        {event.location && (
+                          <div className={styles.eventLocation}>
+                            <MapPin size={12} /> {event.location}
+                          </div>
+                        )}
+                        {event.tag_ids && (
+                          <div className={styles.eventTags}>
+                            <Tag size={10} />
+                            {event.tag_ids.split(",").map((tag, idx) => (
+                              <span key={idx} className={styles.tagItem}>
+                                {tag.trim()}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                        <div className={styles.eventTimeRange}>
+                          {event.start_time} - {event.end_time}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <input
+        ref={dateInputRef}
+        type="date"
+        value={dateValue}
+        onChange={onDateChange}
+        className={styles.visuallyHiddenDate}
+      />
+    </div>
+  );
 };
 
 export default Calendar;
