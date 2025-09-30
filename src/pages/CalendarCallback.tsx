@@ -12,10 +12,10 @@ const CalendarCallback: React.FC = () => {
 
     if (connected === "true") {
       alert("캘린더 연동이 완료되었습니다!");
-      navigate("/dashboard"); // 메인 캘린더 페이지로 이동
+      navigate("/"); // 메인 캘린더 페이지로 이동
     } else {
       alert("캘린더 연동에 실패했습니다. 다시 시도해주세요.");
-      navigate("/dashboard");
+      navigate("/");
     }
   }, [navigate]);
 

@@ -1,519 +1,156 @@
-/* Calendar 컴포넌트 전용 스타일 */
-
 .calendarRoot {
   width: 100%;
   margin: 0 auto;
 }
 
-/* ======================
-   스케줄 컨테이너
-   ====================== */
-
 .scheduleContainer {
-  background: var(--bg-primary);
-  border: 1px solid var(--border-light);
-  border-radius: 16px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: var(--shadow);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
 
 .scheduleHeader {
   display: flex;
-  align-items: flex-start;
   justify-content: space-between;
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid var(--border-light);
-  gap: 16px;
-}
-
-.scheduleHeaderLeft {
-  flex: 1;
-}
-
-.scheduleHeaderRight {
-  display: flex;
   align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .scheduleDate {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 4px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+}
+.badgeToday {
+  margin-left: 8px;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: #3b82f6;
+  color: white;
 }
 
 .scheduleSummary {
-  font-size: 14px;
-  color: var(--text-secondary);
-  font-weight: 400;
-}
-
-.badgeToday {
-  font-size: 12px;
-  padding: 2px 8px;
-  border-radius: 12px;
-  background: var(--accent-blue);
-  color: white;
-  font-weight: 500;
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 4px;
 }
 
 .connectionBadge {
   font-size: 12px;
   padding: 4px 8px;
+  border-radius: 6px;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.iconButton {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px;
+  color: #6b7280;
+}
+
+.connectBanner {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #374151;
+  background: #f9fafb;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* 타임라인 */
+.scheduleTimeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.scheduleRow {
+  display: flex;
+  align-items: flex-start;
+  border-bottom: 1px solid #f3f4f6;
+  padding: 8px 0;
+}
+.scheduleTime {
+  width: 60px;
+  font-size: 12px;
+  color: #9ca3af;
+  text-align: right;
+  padding-right: 8px;
+}
+.scheduleContent {
+  flex: 1;
+}
+.freeTime {
+  font-size: 13px;
+  color: #d1d5db;
+}
+
+/* 이벤트 카드 */
+.eventCard {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
   border-radius: 12px;
-  font-weight: 500;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+.eventTitle {
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.eventDescription {
+  font-size: 13px;
+  color: #4b5563;
+  margin-top: 4px;
+}
+.eventLocation {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 2px;
   display: flex;
   align-items: center;
   gap: 4px;
-  white-space: nowrap;
 }
-
-/* ======================
-   연동 배너
-   ====================== */
-
-.connectBanner {
-  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-  border-bottom: 1px solid var(--border-light);
-  padding: 16px 24px;
-}
-
-.connectBannerContent {
+.eventTags {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
 }
-
-.connectBanner p {
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: 14px;
+.tagItem {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: #e5e7eb;
+  color: #374151;
 }
-
-.connectDropdown {
-  padding: 8px 12px;
-  border: 1px solid var(--border-medium);
-  border-radius: 8px;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  font-size: 14px;
-  cursor: pointer;
-  min-width: 180px;
-}
-
-.connectDropdown:focus {
-  outline: none;
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* ======================
-   아이콘 버튼
-   ====================== */
-
-.iconButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  border: 1px solid var(--border-light);
-  background: var(--bg-primary);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: var(--text-secondary);
-}
-
-.iconButton:hover {
-  background: var(--bg-secondary);
-  border-color: var(--border-medium);
-  color: var(--text-primary);
-}
-
-.iconButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* ======================
-   타임라인
-   ====================== */
-
-.scheduleTimeline {
-  max-height: 500px;
-  overflow-y: auto;
-}
-
-.scheduleTimeline::-webkit-scrollbar {
-  width: 6px;
-}
-
-.scheduleTimeline::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
-  border-radius: 3px;
-}
-
-.scheduleTimeline::-webkit-scrollbar-thumb {
-  background: var(--border-medium);
-  border-radius: 3px;
-}
-
-.scheduleTimeline::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
-}
-
-/* ======================
-   시간 슬롯
-   ====================== */
-
-.scheduleHourCompact {
-  display: flex;
-  border-bottom: 1px solid var(--border-light);
-  min-height: 40px;
-  position: relative;
-}
-
-.scheduleHourCompact:nth-child(3n) {
-  border-bottom: 2px solid var(--border-medium);
-}
-
-.scheduleTimeCompact {
-  width: 60px;
-  padding: 8px 12px;
+.eventTimeRange {
   font-size: 12px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  background: var(--bg-secondary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-right: 1px solid var(--border-light);
-  flex-shrink: 0;
-  position: relative;
-}
-
-/* 중요 시간대 강조 */
-.scheduleHourCompact:nth-child(10) .scheduleTimeCompact,
-.scheduleHourCompact:nth-child(13) .scheduleTimeCompact,
-.scheduleHourCompact:nth-child(19) .scheduleTimeCompact {
-  background: rgba(59, 130, 246, 0.1);
-  font-weight: 600;
-  color: var(--accent-blue);
-}
-
-/* 오전/오후 표시 */
-.scheduleHourCompact:nth-child(13) .scheduleTimeCompact::after {
-  content: '오후';
-  position: absolute;
-  right: 4px;
-  top: 2px;
-  font-size: 8px;
-  color: var(--accent-blue);
-  font-weight: 600;
-}
-
-.scheduleHourCompact:first-child .scheduleTimeCompact::after {
-  content: '오전';
-  position: absolute;
-  right: 4px;
-  top: 2px;
-  font-size: 8px;
-  color: var(--accent-green);
-  font-weight: 600;
-}
-
-/* ======================
-   이벤트 오버레이
-   ====================== */
-
-.scheduleContentOverlay {
-  flex: 1;
-  padding: 4px 8px;
-  position: relative;
-  min-height: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.scheduleContentOverlay .scheduleEventOverlay + .scheduleEventOverlay {
+  color: #9ca3af;
+  text-align: right;
   margin-top: 4px;
 }
 
-.scheduleEventOverlay {
-  background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
-  color: white;
-  border-radius: 8px;
-  padding: 8px 12px;
-  margin: 2px 0;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: var(--shadow);
-  position: relative;
-  overflow: hidden;
-}
-
-.scheduleEventOverlay::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.1);
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.scheduleEventOverlay:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 10;
-}
-
-.scheduleEventOverlay:hover::before {
-  opacity: 1;
-}
-
-/* 이벤트 상태별 스타일 */
-.scheduleEventOverlay.eventStart {
-  background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
-  border-radius: 8px 8px 4px 4px;
-}
-
-.scheduleEventOverlay.eventStart::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.scheduleEventOverlay.eventMiddle {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(16, 185, 129, 0.8));
-  border-radius: 4px;
-  opacity: 0.9;
-  padding: 4px 12px;
-}
-
-.scheduleEventOverlay.eventEnd {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.7), rgba(16, 185, 129, 0.7));
-  border-radius: 4px 4px 8px 8px;
-  opacity: 0.8;
-  padding: 4px 12px;
-}
-
-.scheduleEventOverlay.eventEnd::before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.3);
-}
-
-/* ======================
-   이벤트 내용
-   ====================== */
-
-.eventOverlayHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
-  gap: 8px;
-}
-
-.eventTitleCompact {
-  font-size: 14px;
-  font-weight: 600;
-  color: white;
-  line-height: 1.2;
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.eventTimeCompact {
+/* 배지 */
+.badge {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.8);
-  background: rgba(255, 255, 255, 0.2);
   padding: 2px 6px;
-  border-radius: 10px;
-  white-space: nowrap;
-  font-weight: 500;
-}
-
-.eventBadgesCompact {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-bottom: 4px;
-}
-
-.eventBadgeMini {
-  font-size: 9px;
-  padding: 1px 4px;
   border-radius: 6px;
   font-weight: 500;
-  color: white;
-  background: rgba(255, 255, 255, 0.3);
 }
-
-.eventBadgeMini.statusConfirmed {
-  background: rgba(16, 185, 129, 0.8);
-}
-
-.eventBadgeMini.statusTentative {
-  background: rgba(239, 68, 68, 0.8);
-}
-
-.eventBadgeMini.statusCancelled {
-  background: rgba(107, 114, 128, 0.8);
-}
-
-.eventDescriptionCompact {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.3;
-  margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.eventLocationCompact {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.8);
-  margin-top: 2px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.eventContinue {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 28px;
-}
-
-.eventTitleContinue {
-  font-size: 12px;
-  font-weight: 500;
-  color: white;
-  text-align: center;
-  opacity: 0.9;
-}
-
-/* ======================
-   로딩 상태
-   ====================== */
-
-.loadingContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-  gap: 12px;
-}
-
-.loadingContainer .loadingSpinner {
-  width: 24px;
-  height: 24px;
-}
-
-.loadingContainer p {
-  color: var(--text-secondary);
-  font-size: 14px;
-  margin: 0;
-}
-
-.loadingSpinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--border-light);
-  border-top: 2px solid currentColor;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  opacity: 0.8;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* ======================
-   숨겨진 날짜 입력
-   ====================== */
+.badge.google { background: #e0f2fe; color: #0284c7; }
+.badge.kakao { background: #fef3c7; color: #b45309; }
+.badge.confirmed { background: #dcfce7; color: #166534; }
+.badge.pending { background: #fef3c7; color: #92400e; }
+.badge.cancelled { background: #f3f4f6; color: #6b7280; }
 
 .visuallyHiddenDate {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  border: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  clip-path: inset(50%);
-}
-
-/* ======================
-   반응형
-   ====================== */
-
-@media (max-width: 480px) {
-  .scheduleHeader {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-  
-  .scheduleHeaderRight {
-    align-self: flex-end;
-  }
-  
-  .connectBannerContent {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-  
-  .connectDropdown {
-    width: 100%;
-  }
-  
-  .scheduleTimeCompact {
-    width: 50px;
-    font-size: 11px;
-    padding: 6px 8px;
-  }
-  
-  .eventTitleCompact {
-    font-size: 13px;
-  }
-  
-  .eventTimeCompact {
-    font-size: 10px;
-  }
+  display: none;
 }
